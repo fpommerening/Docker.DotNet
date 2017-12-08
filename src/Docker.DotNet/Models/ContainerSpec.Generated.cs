@@ -56,5 +56,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Secrets", EmitDefaultValue = false)]
         public IList<SecretReference> Secrets { get; set; }
+
+        [DataMember(Name = "Configs", EmitDefaultValue = false)]
+        public IList<Swarm.ConfigReference> Configs { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models.Swarm;
@@ -14,24 +15,43 @@ namespace Docker.DotNet
             _client = client;
         }
 
-        public Task<IList<Config>> ListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<Config>> ListAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "configs", cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<IList<Config>>(response.Body);
         }
 
-        public Task<ConfigCreateResponse> CreateAsync(ConfigSpec body, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ConfigCreateResponse> CreateAsync(ConfigSpec body, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            if (body == null)
+            {
+                throw new ArgumentNullException(nameof(body));
+            }
+
+            var data = new JsonRequestContent<ConfigSpec>(body, this._client.JsonSerializer);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "configs/create", null, data, cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<ConfigCreateResponse>(response.Body);
         }
 
-        public Task<Config> InspectAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Config> InspectAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"configs/{id}", cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<Config>(response.Body);
         }
 
         public Task DeleteAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Delete, $"configs/{id}", cancellationToken);
         }
     }
 }

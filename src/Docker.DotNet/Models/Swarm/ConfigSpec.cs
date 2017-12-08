@@ -30,6 +30,6 @@ namespace Docker.DotNet.Models.Swarm
         public IDictionary<string, string> Labels { get; set; }
 
         [DataMember(Name = "Data", EmitDefaultValue = false)]
-        public IList<byte> Data { get; set; }
+        public byte[] Data { get; set; }
     }
 }

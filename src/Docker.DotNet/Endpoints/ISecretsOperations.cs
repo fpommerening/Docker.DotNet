@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using Docker.DotNet.Models.Swarm;
 
 namespace Docker.DotNet
 {
@@ -14,7 +15,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<Secret>> ListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<Secret>> ListAsync(SecretListOptions options, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create a secret

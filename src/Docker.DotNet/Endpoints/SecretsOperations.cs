@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using Docker.DotNet.Models.Swarm;
 
 namespace Docker.DotNet
 {
@@ -16,9 +17,14 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        async Task<IList<Secret>> ISecretsOperations.ListAsync(CancellationToken cancellationToken)
+        async Task<IList<Secret>> ISecretsOperations.ListAsync(SecretListOptions options, CancellationToken cancellationToken)
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "secrets", cancellationToken).ConfigureAwait(false);
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            IQueryString queryParameters = new QueryString<SecretListOptions>(options);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "secrets", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<IList<Secret>>(response.Body);
         }
 

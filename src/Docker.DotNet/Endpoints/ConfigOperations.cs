@@ -15,9 +15,16 @@ namespace Docker.DotNet
             _client = client;
         }
 
-        public async Task<IList<Config>> ListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<Config>> ListAsync(ConfigListOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "configs", cancellationToken).ConfigureAwait(false);
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            IQueryString queryParameters = new QueryString<ConfigListOptions>(options);
+
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "configs", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<IList<Config>>(response.Body);
         }
 

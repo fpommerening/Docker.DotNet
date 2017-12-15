@@ -7,7 +7,7 @@ namespace Docker.DotNet
 {
     public interface IConfigOperations
     {
-        Task<IList<Config>> ListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<Config>> ListAsync(ConfigListOptions options, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<ConfigCreateResponse> CreateAsync(ConfigSpec body, CancellationToken cancellationToken = default(CancellationToken));
 

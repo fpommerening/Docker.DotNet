@@ -1,4 +1,6 @@
 
+using Docker.DotNet.Models.Swarm;
+
 namespace Docker.DotNet
 {
     using System;
@@ -124,9 +126,16 @@ namespace Docker.DotNet
                 cancellationToken).ConfigureAwait(false);
         }
 
-        async Task<IEnumerable<SwarmService>> ISwarmOperations.ListServicesAsync(CancellationToken cancellationToken)
+        async Task<IEnumerable<SwarmService>> ISwarmOperations.ListServicesAsync(ServicesListOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services", cancellationToken).ConfigureAwait(false);
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            IQueryString queryParameters = new QueryString<ServicesListOptions>(options);
+
+            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<SwarmService[]>(response.Body);
         }
 

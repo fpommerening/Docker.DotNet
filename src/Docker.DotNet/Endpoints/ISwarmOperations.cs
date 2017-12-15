@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using System.Threading;
+using Docker.DotNet.Models.Swarm;
 
 namespace Docker.DotNet
 {
@@ -126,7 +127,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<IEnumerable<SwarmService>> ListServicesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<SwarmService>> ListServicesAsync(ServicesListOptions options, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a service.
